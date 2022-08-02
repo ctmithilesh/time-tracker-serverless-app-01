@@ -1,6 +1,6 @@
 const AWS = require("aws-sdk");
 
-const customerDB = new AWS.DynamoDB.DocumentClient();
+const tasksDB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event, context) => {
     const TABLE= 'TimeTracker'
@@ -17,10 +17,10 @@ exports.handler = async (event, context) => {
     try {
         switch (route) {
             case "GET /time-tracker":
-                body = await customerDB.scan({TableName: TABLE}).promise();
+                body = await tasksDB.scan({TableName: TABLE}).promise();
                 break;
             case "GET /time-tracker/{id}":
-                body = await customerDB
+                body = await tasksDB
                     .get({
                         TableName: TABLE,
                         Key: {
@@ -31,7 +31,7 @@ exports.handler = async (event, context) => {
                 break;
             case "PUT /time-tracker":
                 let requestJSON = JSON.parse(event.body);
-                await customerDB
+                await tasksDB
                     .put({
                         TableName: TABLE,
                         Item: {
@@ -47,7 +47,7 @@ exports.handler = async (event, context) => {
                 body = `Put item ${requestJSON.id}`;
                 break;
             case "DELETE /time-tracker/{id}":
-                await customerDB
+                await tasksDB
                     .delete({
                         TableName: TABLE,
                         Key: {
